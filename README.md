@@ -1,4 +1,5 @@
 # hometest
+
 Pytest Python Selenium for Web automation testing
 
 Project setup:
@@ -7,3 +8,4 @@ uv venv
 .venv\Scripts\activate
 uv add pytest
 uv add allure-pytest
+uv add selenium
