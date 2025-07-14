@@ -6,6 +6,7 @@ from utilities.driver_factory import DriverFactory
 
 class TestResponsiveDesign:
     
+    @pytest.mark.responsive
     def test_header_responsive(self, driver_init, mobile_helpers):
         """Test if header elements are properly displayed on mobile"""
         home_page = HomePage(driver_init)
@@ -17,6 +18,8 @@ class TestResponsiveDesign:
         header_info = mobile_helpers.check_responsive_element(home_page.header)
         assert header_info["within_viewport"]
     
+    
+    @pytest.mark.responsive
     @pytest.mark.parametrize("device", ["iPhone 12 Pro", "Samsung Galaxy S21", "iPad"])
     def test_cross_device_compatibility(self, device):
         """Test across different mobile devices"""
@@ -27,6 +30,8 @@ class TestResponsiveDesign:
         assert home_page.is_page_loaded()
         driver.quit()
     
+
+    @pytest.mark.responsive
     def test_touch_interactions(self, driver_init, mobile_helpers):
         """Test mobile-specific touch interactions"""
         home_page = HomePage(driver_init)

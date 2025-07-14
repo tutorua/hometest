@@ -3,6 +3,7 @@ from pathlib import Path
 
 # Base configurations
 BASE_URL = "https://m.twitch.tv/"
+DEFAULT_BROWSER = "chrome"
 IMPLICIT_WAIT = 10
 EXPLICIT_WAIT = 20
 SCREENSHOT_ON_FAILURE = True
