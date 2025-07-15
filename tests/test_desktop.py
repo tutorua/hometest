@@ -10,7 +10,8 @@ class TestDesign:
     def test_title(self, driver_init):
         """Test if the page title is correct"""
         home_page_title = "Twitch"
-        home_page = DriverFactory.create_driver(browser_name, mobile = False, device_name = None)
+        # home_page = DriverFactory.create_driver(browser_name, mobile = False, device_name = None)
+        home_page = HomePage(driver_init)
         assert home_page.getTitle() == home_page_title
 
 

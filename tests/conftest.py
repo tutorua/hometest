@@ -5,9 +5,14 @@ from utilities.driver_factory import DriverFactory
 from config.settings import BASE_URL, SCREENSHOTS_DIR, DEFAULT_BROWSER
 from utilities.mobile_helpers import MobileHelpers
 
+# Global variable to store test configuration
+_test_config = {}
+
 @pytest.fixture(scope="session")
 def driver_init(request):
     """Initialize driver for the test session"""
+    global _test_config
+    
     browser = request.config.getoption("--browser", default=DEFAULT_BROWSER)
     device = request.config.getoption("--device", default=None)
     headless = request.config.getoption("--headless", default=False)
@@ -18,6 +23,14 @@ def driver_init(request):
     
     # Determine if mobile mode
     is_mobile = device is not None
+    
+    # Store test configuration
+    _test_config = {
+        'browser': browser,
+        'device': device,
+        'headless': headless,
+        'is_mobile': is_mobile
+    }
     
     try:
         if is_mobile:
@@ -36,14 +49,6 @@ def driver_init(request):
         
         # Navigate to base URL
         driver.get(BASE_URL)
-        
-        # Store test configuration for later use
-        driver._test_config = {
-            'browser': browser,
-            'device': device,
-            'headless': headless,
-            'is_mobile': is_mobile
-        }
         
         yield driver
         
@@ -64,19 +69,19 @@ def mobile_helpers(driver_init):
 @pytest.fixture
 def is_mobile(driver_init):
     """Check if current test is running in mobile mode"""
-    return getattr(driver_init, '_test_config', {}).get('is_mobile', False)
+    return _test_config.get('is_mobile', False)
 
 
 @pytest.fixture
 def current_browser(driver_init):
     """Get current browser name"""
-    return getattr(driver_init, '_test_config', {}).get('browser', DEFAULT_BROWSER)
+    return _test_config.get('browser', DEFAULT_BROWSER)
 
 
 @pytest.fixture
 def current_device(driver_init):
     """Get current device name (None for desktop)"""
-    return getattr(driver_init, '_test_config', {}).get('device', None)
+    return _test_config.get('device', None)
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
@@ -91,9 +96,8 @@ def pytest_runtest_makereport(item, call):
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             
             # Get test configuration for better screenshot naming
-            test_config = getattr(driver, '_test_config', {})
-            browser = test_config.get('browser', 'unknown')
-            device = test_config.get('device', 'desktop')
+            browser = _test_config.get('browser', 'unknown')
+            device = _test_config.get('device', 'desktop')
             
             screenshot_name = f"{item.name}_{browser}_{device}_{timestamp}.png"
             screenshot_path = SCREENSHOTS_DIR / screenshot_name
@@ -167,3 +171,4 @@ def pytest_collection_modifyitems(config, items):
                 supported_browsers = [mark.args[0] for mark in browser_markers]
                 if browser.lower() not in [b.lower() for b in supported_browsers]:
                     item.add_marker(skip_browser)
+                    

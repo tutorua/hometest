@@ -2,10 +2,13 @@ from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service as FirefoxService
+from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.edge.options import Options as EdgeOptions
 from selenium.webdriver.edge.service import Service as EdgeService
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from config.settings import DRIVERS_DIR, IMPLICIT_WAIT, DEFAULT_MOBILE_DEVICE
 from config.mobile_devices import MOBILE_DEVICES
 
@@ -41,8 +44,8 @@ class DriverFactory:
         # chrome_options.add_argument("--headless")
         
         try:
-            service_chr = ChromeService(str(DRIVERS_DIR / "chromedriver"))
-            driver = webdriver.Chrome(service=service_chr, options=chrome_options)
+            service = ChromeService(ChromeDriverManager().install())
+            driver = webdriver.Chrome(service=service, options=chrome_options)  
             driver.implicitly_wait(IMPLICIT_WAIT)
             return driver
         except WebDriverException as e:
@@ -72,8 +75,8 @@ class DriverFactory:
         # firefox_options.add_argument("--headless")
         
         try:
-            service_ff = FirefoxService(str(DRIVERS_DIR / "geckodriver"))
-            driver = webdriver.Firefox(service=service_ff, options=firefox_options)
+            service = FirefoxService(GeckoDriverManager().install())
+            driver = webdriver.Firefox(service=service, options=firefox_options)
             
             # Set window size to simulate mobile device
             driver.set_window_size(device_config["width"], device_config["height"])
@@ -113,8 +116,8 @@ class DriverFactory:
         # edge_options.add_argument("--headless")
         
         try:
-            service_edge = EdgeService(str(DRIVERS_DIR / "msedgedriver"))
-            driver = webdriver.Edge(service=service_edge, options=edge_options)
+            service = EdgeService(EdgeChromiumDriverManager().install())
+            driver = webdriver.Edge(service=service, options=edge_options) 
             driver.implicitly_wait(IMPLICIT_WAIT)
             return driver
         except WebDriverException as e:
@@ -149,12 +152,12 @@ class DriverFactory:
                 chrome_options.add_argument("--disable-dev-shm-usage")
                 chrome_options.add_argument("--disable-gpu")
                 chrome_options.add_argument("--start-maximized")
-                service = ChromeService(str(DRIVERS_DIR / "chromedriver"))
+                service = ChromeService(ChromeDriverManager().install())
                 driver = webdriver.Chrome(service=service, options=chrome_options)           
             elif browser_name.lower() == "firefox":
                 firefox_options = FirefoxOptions()
                 # Add any Firefox-specific options here if needed
-                service = FirefoxService(str(DRIVERS_DIR / "geckodriver"))
+                service = FirefoxService(GeckoDriverManager().install())
                 driver = webdriver.Firefox(service=service, options=firefox_options)
                 driver.maximize_window()            
             elif browser_name.lower() == "edge":
@@ -163,7 +166,7 @@ class DriverFactory:
                 edge_options.add_argument("--disable-dev-shm-usage")
                 edge_options.add_argument("--disable-gpu")
                 edge_options.add_argument("--start-maximized")
-                service = EdgeService(str(DRIVERS_DIR / "msedgedriver"))
+                service = EdgeService(EdgeChromiumDriverManager().install())
                 driver = webdriver.Edge(service=service, options=edge_options)               
             else:
                 raise ValueError(f"Unsupported browser: {browser_name}. Supported browsers are: chrome, firefox, edge.")
