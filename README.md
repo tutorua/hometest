@@ -12,10 +12,10 @@ uv add selenium
 uv add webdriver-manager
 
 How to run:
-for mobile devices use the mark 'responsive'
+for mobile devices use the marker 'responsive'
 pytest -m responsive --device=iPad -v
 
-for desktop computers use the mark 'tesktop'
+for desktop computers use the marker 'desktop'
 pytest -m desktop -v --browser=chrome
 pytest -m desktop -v --browser=firefox
 pytest -m desktop -v --browser=edge
