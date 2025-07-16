@@ -4,16 +4,18 @@
 A framework to test mobile and desktop applications
 
 ## Project setup:
-uv init --python 3.14</br>
-uv venv</br>
-.venv\Scripts\activate or source ./.venv/bin/activate.sh</br>
-uv add pytest</br>
-uv add allure-pytest</br>
-uv add selenium</br>
-uv add webdriver-manager</br>
+```bash
+uv init --python 3.14
+uv venv
+.venv\Scripts\activate or source ./.venv/bin/activate.sh
+uv add pytest
+uv add allure-pytest
+uv add selenium
+uv add webdriver-manager
+```
 
-## Folders structure
-
+## Test results
+![Folders and files](https://www.automatetheplanet.com/wp-content/uploads/2019/01/test-automation-reporting-allure.png)
 
 ## How to run:
 * for mobile devices use the marker 'responsive'
@@ -29,3 +31,5 @@ uv add webdriver-manager</br>
 * To create Allure reports:
    * pytest -m responsive -v --device="iPhone 12 Pro" --browser=chrome **--alluredir=allure-results**
    * allure serve allure-results
+
+## Folders structure
