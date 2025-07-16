@@ -53,7 +53,10 @@ class MobileHelpers:
         return {"width": width, "height": height}
 
 
-    def take_screenshot(self, screenshot_path):
-        """Save a screenshot of the current view"""
-        self.driver.save_screenshot(screenshot_path)
-        print(f"Screenshot saved to {screenshot_path}")
+#     def take_screenshot(self, elem, screenshot_path):
+#         """Save a screenshot of the current view"""
+#         mobile_helpers = MobileHelpers(self.driver)
+
+#         mobile_helpers.save_screenshot(screenshot_path)
+#         print(f"Screenshot saved to {screenshot_path}")
+# 

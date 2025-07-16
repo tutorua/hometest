@@ -40,6 +40,6 @@ class HomePage(BasePage):
     def is_browse_visible(self):
         return self.is_element_visible((By.XPATH, self.menu_browse))
     
-    def save_screenshot(self, file_path):
+"""     def save_screenshot(self, file_path):
         self.driver.save_screenshot(file_path)
-    
+ """    

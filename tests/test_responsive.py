@@ -26,16 +26,19 @@ class TestResponsiveDesign:
         home_page = HomePage(driver_init)
         home_page.click(home_page.menu_browse)
         input_field = home_page.driver.find_element(By.CSS_SELECTOR, home_page.CSS_SEARCH)
-        # input_field.click()
+        input_field.click()
         input_field.send_keys(search_text)
         # item = WebDriverWait(home_page.driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "ul > li:nth-child(2)")))
         item = WebDriverWait(home_page.driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "ul > li:nth-child(2)")))
-        item.click()
 
         test_name = request.node.name  # Get current test name
         screenshot_name = f"{test_name}.png"
         screenshot_path = SCREENSHOTS_DIR / screenshot_name
-        MobileHelpers.take_screenshot(home_page.driver, str(screenshot_path))
+        driver_init.save_screenshot(str(screenshot_path))
+       
+        
+        item.click()
+
 
         # Test tap interaction
         #mobile_helpers.tap(home_page.menu_browse)

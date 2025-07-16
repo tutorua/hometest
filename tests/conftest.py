@@ -93,14 +93,14 @@ def pytest_runtest_makereport(item, call):
     if rep.when == "call" and rep.failed:
         driver = item.funcargs.get('driver_init')
         if driver:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            #timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             
             # Get test configuration for better screenshot naming
             browser = _test_config.get('browser', 'unknown')
             device = _test_config.get('device', 'desktop')
             
             screenshot_name = f"{item.name}_{browser}_{device}.png"
-            screenshot_path = SCREENSHOTS_DIR / timestamp / screenshot_name
+            screenshot_path = SCREENSHOTS_DIR / screenshot_name
             
             # Ensure screenshots directory exists
             os.makedirs(SCREENSHOTS_DIR, exist_ok=True)
