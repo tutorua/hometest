@@ -1,13 +1,13 @@
 import pytest
-
+import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from pages.home_page import HomePage
 from config.mobile_devices import MOBILE_DEVICES
 from utilities.mobile_helpers import MobileHelpers
 from config.settings import SCREENSHOTS_DIR
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
+from utilities.general import General
 
 class TestResponsiveDesign:
 
@@ -22,6 +22,7 @@ class TestResponsiveDesign:
     def test_touch_interactions(self, driver_init, request):
         """Test the Search form interactions on mobile"""
 
+        test_name = request.node.name  # Get current test name
         search_text = "StarCraftII"
         home_page = HomePage(driver_init)
         home_page.click(home_page.menu_browse)
@@ -30,38 +31,34 @@ class TestResponsiveDesign:
         input_field.send_keys(search_text)
         # item = WebDriverWait(home_page.driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "ul > li:nth-child(2)")))
         item = WebDriverWait(home_page.driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "ul > li:nth-child(2)")))
-
-        test_name = request.node.name  # Get current test name
-        screenshot_name = f"{test_name}.png"
-        screenshot_path = SCREENSHOTS_DIR / screenshot_name
-        driver_init.save_screenshot(str(screenshot_path))
-       
-        
         item.click()
+        top_video = home_page.driver.find_element(By.CSS_SELECTOR,"img.tw-image")
+        top_video.click()
+        # Make sure the page with video have been loaded
+        WebDriverWait(home_page.driver, 15).until(
+            EC.visibility_of_element_located((By.XPATH, '//*[contains(text(), "Welcome to the chat room!")]'))
+        )
+        # Take screenshot after interaction
+        driver_init.save_screenshot(SCREENSHOTS_DIR / f"{test_name}.png")
+        video = '//*[@id="channel-live-overlay"]/div/div/div[1]/div/div/div/div[2]/video'
+        # Assert the video is playing (not paused) That approach might not work for Twitch
+        # is_playing = driver_init.execute_script("return arguments[0].paused === false;", video)
+        # assert is_playing, "Video is not playing"
+        # Wait for the element to be visible
+        time_elem = WebDriverWait(home_page.driver, 10).until(
+            EC.visibility_of_element_located((By.CSS_SELECTOR, '[aria-label="Time Spent Live Streaming"]'))
+        )
 
+        # Get the initial time
+        time1_str = time_elem.text
+        time1 = General.parse_time(time1_str)
 
-        # Test tap interaction
-        #mobile_helpers.tap(home_page.menu_browse)
-        assert 1 == 1
-        
-        # Test swipe interaction
-        # mobile_helpers.swipe_left(home_page.carousel)
-        # Add assertions for swipe behavior
-        # # Check if header fits within viewport
-        # header_info = mobile_helpers.check_responsive_element(home_page.header)
-        # assert header_info["within_viewport"]
-    
+        # Wait 3 seconds
+        time.sleep(3)
 
-    # @pytest.mark.responsive
-    # @pytest.mark.parametrize("device", ["iPhone 12 Pro", "Samsung Galaxy S21", "iPad"])
-    # def test_cross_device_compatibility(self, device):
-    #     """Test across different mobile devices"""
-    #     driver = DriverFactory.create_mobile_driver(device)
-    #     home_page = HomePage(driver)
-        
-    #     # Test basic functionality across devices
-    #     assert home_page.is_page_loaded()
-    #     driver.quit()
-    
+        # Get the time again
+        time2_str = time_elem.text
+        time2 = General.parse_time(time2_str)
 
-
+        # Assert the difference is greater than 2 seconds
+        assert (time2 - time1) > 2, f"Time did not advance as expected: {time1_str} -> {time2_str}"
