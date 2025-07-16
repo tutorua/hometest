@@ -99,8 +99,8 @@ def pytest_runtest_makereport(item, call):
             browser = _test_config.get('browser', 'unknown')
             device = _test_config.get('device', 'desktop')
             
-            screenshot_name = f"{item.name}_{browser}_{device}_{timestamp}.png"
-            screenshot_path = SCREENSHOTS_DIR / screenshot_name
+            screenshot_name = f"{item.name}_{browser}_{device}.png"
+            screenshot_path = SCREENSHOTS_DIR / timestamp / screenshot_name
             
             # Ensure screenshots directory exists
             os.makedirs(SCREENSHOTS_DIR, exist_ok=True)

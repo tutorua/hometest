@@ -51,3 +51,9 @@ class MobileHelpers:
         width = self.driver.execute_script("return window.innerWidth;")
         height = self.driver.execute_script("return window.innerHeight;")
         return {"width": width, "height": height}
+
+
+    def take_screenshot(self, screenshot_path):
+        """Save a screenshot of the current view"""
+        self.driver.save_screenshot(screenshot_path)
+        print(f"Screenshot saved to {screenshot_path}")
